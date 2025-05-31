@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Delivery</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: linear-gradient(rgba(50, 42, 0, 0.633), rgba(123, 97, 3, 0.353)), url(keith-misner-h0Vxgz5tyXA-unsplash.jpg); /* Consider using static file for image */
+            background-position: center;
+            background-size: cover;
+            color: #333;
+            /* align-items: center; Removed to allow scrolling for long forms */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
+            display: flex;
+            flex-direction: column; /* Allow content to flow downwards */
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 3.8rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.68);
+            color: #333; /* Consider a lighter color for better contrast on dark background */
+            margin-bottom: 0;
+            margin-top: 0; /* Remove default margin to avoid extra space */
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #333; /* Semi-transparent or theme-matching color might look better */
+            border-radius: 8px; /* Rounded corners for nav */   
+            margin-bottom: 20px;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .form-container { /* Renamed from .form for clarity */
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            padding-bottom: 40px; /* Space at the bottom */
+        }
+
+        form {
+            text-align: left;
+            background-color: #fff;
+            padding: 25px; /* Increased padding */
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px; /* Slightly more rounded */
+            max-width: 450px; /* Slightly wider form */
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 6px; /* Adjusted margin */
+            font-weight: bold; /* Make labels stand out */
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: calc(100% - 22px); /* Accommodate padding and border */
+            padding: 10px;
+            margin-bottom: 15px; /* Increased margin */
+            border: 1px solid #ccc; /* Slightly darker border for better visibility */
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding doesn't add to width */
+        }
+        
+        input:read-only {
+            background-color: #f0f0f0; /* Visual cue for readonly fields */
+            cursor: not-allowed;
+        }
+
+        button { /* General button styling */
+            padding: 12px 24px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none; /* Ensure no underline if wrapped in <a> */
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+        
+        button[type="submit"] { /* Specific styling for the main submit button */
+            width: 100%;
+            margin-top: 15px; /* Add some space above submit button */
+        }
+        
+        .btw_Btn { /* Styling for intermediate action buttons */
+            display: block;
+            margin: 15px auto; 
+            width: auto; /* Let button size itself */
+            min-width: 60%; /* Ensure it's not too small */
+            padding: 10px 15px; 
+            font-size: 0.9rem; 
+            border-radius: 18px; /* Pill shape */
+        }        
+        
+        .error-message {
+            color: red;
+            background-color: #ffebee;
+            border: 1px solid #ef9a9a;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Delivery</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'admin_home' %}">Home</a></li> <li><a href="{% url 'admin_view_delivery' %}">View Deliveries</a></li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <form id="deliveryForm" method="post" action="{% url 'add_delivery' %}">
+            {% csrf_token %}
+
+            {% if error %}
+                <div class="error-message">{{ error }}</div>
+            {% endif %}
+
+            <label for="r_name">Name:</label>
+            <input type="text" id="r_name" name="recipient_name" placeholder="Enter recipient's name" value="{{ initial_data.recipient_name|default:'' }}" required>
+            
+            <label for="r_number">Mobile Number:</label>
+            <input type="tel" id="r_number" name="recipient_mobile_number" placeholder="Enter recipient's mobile number" value="{{ initial_data.recipient_mobile_number|default:'' }}" pattern="[0-9]{10}" title="Enter a 10-digit mobile number" required>
+            
+            <label for="pickup">Pickup Address:</label>
+            <input type="text" id="pickup" name="pickup" placeholder="Enter full pickup address" value="{{ initial_data.pickup|default:'' }}" required>
+            
+            <label for="destination">Destination Address:</label>
+            <input type="text" id="destination" name="destination" placeholder="Enter full destination address" value="{{ initial_data.destination|default:'' }}" required>
+
+            <button class="btw_Btn" type="button" onclick="getTripDetails()">Get Coordinates & Distance</button>
+
+            <label for="pickup_coordinates">Pickup Coordinates:</label>
+            <input type="text" id="pickup_coordinates" name="pickup_coordinates" placeholder="Will be auto-filled" value="{{ initial_data.pickup_coordinates|default:'' }}" readonly>
+
+            <label for="destination_coordinates">Destination Coordinates:</label>
+            <input type="text" id="destination_coordinates" name="destination_coordinates" placeholder="Will be auto-filled" value="{{ initial_data.destination_coordinates|default:'' }}" readonly>
+
+            <label for="distance">Distance (km):</label>
+            <input type="text" id="distance" name="distance" placeholder="Will be auto-filled" value="{{ initial_data.distance|default:'' }}" readonly>
+            
+            <label for="productType">Product Type:</label>
+            <select id="productType" name="product_type" required>
+                <option value="" disabled {% if not initial_data.product_type %}selected{% endif %}>Select a product type</option>
+                <option value="Documents" {% if initial_data.product_type == "Documents" %}selected{% endif %}>Documents</option>
+                <option value="Clothing" {% if initial_data.product_type == "Clothing" %}selected{% endif %}>Clothing</option>
+                <option value="Electronics" {% if initial_data.product_type == "Electronics" %}selected{% endif %}>Electronics</option>
+                <option value="Food" {% if initial_data.product_type == "Food" %}selected{% endif %}>Food</option>
+                <option value="Furniture" {% if initial_data.product_type == "Furniture" %}selected{% endif %}>Furniture</option>
+                <option value="Gifts" {% if initial_data.product_type == "Gifts" %}selected{% endif %}>Gifts</option>
+                <option value="Health" {% if initial_data.product_type == "Health" %}selected{% endif %}>Health & Beauty Products</option>
+                <option value="Office Supplies" {% if initial_data.product_type == "Office Supplies" %}selected{% endif %}>Office Supplies</option>
+                <option value="Industrial Parts" {% if initial_data.product_type == "Industrial Parts" %}selected{% endif %}>Industrial & Automotive Parts</option>
+                <option value="Medical Supplies" {% if initial_data.product_type == "Medical Supplies" %}selected{% endif %}>Medical Supplies</option>
+                 <option value="Other" {% if initial_data.product_type == "Other" %}selected{% endif %}>Other</option>
+            </select>
+
+            <label for="weight">Weight:</label>
+            <select id="weight" name="weight" required>
+                <option value="" disabled {% if not initial_data.weight_value %}selected{% endif %}>Select a weight range</option>
+                <option value="5005" {% if initial_data.weight_value == "5005" %}selected{% endif %}>500g - 5kg</option>
+                <option value="510" {% if initial_data.weight_value == "510" %}selected{% endif %}>5kg - 10kg</option>
+                <option value="1025" {% if initial_data.weight_value == "1025" %}selected{% endif %}>10kg - 25kg</option>
+            </select>
+
+            <button class="btw_Btn" type="button" onclick="calculateDeliveryCharge()">Get Delivery Cost</button>
+            
+            <label for="calculate_delivery_charge">Delivery Cost:</label>
+            <input type="hidden" id="hidden_delivery_charge" name="hidden_delivery_charge" value="{{ initial_data.hidden_delivery_charge|default:'' }}">
+            <input type="text" id="calculate_delivery_charge" name="calculate_delivery_charge" placeholder="Will be auto-filled" value="{{ initial_data.calculate_delivery_charge|default:'' }}" readonly>
+
+            <button type="submit">Proceed to Pay</button>
+        </form>
+    </div>
+
+    <script>
+        function getTripDetails() {
+            const pickup = document.getElementById('pickup').value;
+            const destination = document.getElementById('destination').value;
+
+            if (!pickup || !destination) {
+                alert("Please enter both pickup and destination addresses.");
+                return;
+            }
+
+            // Show some loading indicator if you have one
+            // e.g., document.getElementById('loadingSpinner').style.display = 'block';
+
+            fetch(`/get_trip_details/?pickup=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(destination)}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading indicator
+                    // e.g., document.getElementById('loadingSpinner').style.display = 'none';
+                    if (data.success) {
+                        document.getElementById('pickup_coordinates').value = `Lat: ${data.pickup[0].toFixed(5)}, Lon: ${data.pickup[1].toFixed(5)}`;
+                        document.getElementById('destination_coordinates').value = `Lat: ${data.destination[0].toFixed(5)}, Lon: ${data.destination[1].toFixed(5)}`;
+                        document.getElementById('distance').value = data.distance_km;
+                        // Automatically try to calculate delivery charge if distance is fetched
+                        calculateDeliveryCharge(); 
+                    } else {
+                        alert("Error: " + (data.error || "Unable to fetch trip details. Check addresses."));
+                        document.getElementById('pickup_coordinates').value = '';
+                        document.getElementById('destination_coordinates').value = '';
+                        document.getElementById('distance').value = '';
+                    }
+                })
+                .catch(error => {
+                    // Hide loading indicator
+                    // e.g., document.getElementById('loadingSpinner').style.display = 'none';
+                    console.error('Error fetching trip details:', error);
+                    alert("Failed to fetch trip details. Please check your connection or contact support.");
+                });
+        }
+
+        function calculateDeliveryCharge() {
+            const distance = document.getElementById('distance').value;
+            const weight = document.getElementById('weight').value;
+
+            if (!distance) {
+                alert("Please get the distance first using 'Get Coordinates & Distance'.");
+                return;
+            }
+            if (!weight) {
+                alert("Please select a weight range.");
+                return;
+            }
+            
+            // Show loading indicator for cost calculation
+            document.getElementById('calculate_delivery_charge').value = 'Calculating...';
+
+
+            fetch('/calculate_delivery_charge/', { // Ensure this URL is correct
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}' // Django CSRF token from template
+                },
+                body: new URLSearchParams({
+                    'distance': distance,
+                    'weight': weight
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.delivery_charge) {
+                    const deliveryChargeFormatted = `₹${data.delivery_charge.toFixed(2)}`;
+                    document.getElementById('calculate_delivery_charge').value = deliveryChargeFormatted;
+                    document.getElementById('hidden_delivery_charge').value = data.delivery_charge.toFixed(2);
+                } else {
+                    document.getElementById('calculate_delivery_charge').value = 'Error';
+                    alert("Error calculating charge: " + (data.error || "Unknown error."));
+                    document.getElementById('hidden_delivery_charge').value = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error calculating delivery charge:', error);
+                document.getElementById('calculate_delivery_charge').value = 'Error';
+                alert("Failed to calculate delivery charge. Please check your connection or contact support.");
+                document.getElementById('hidden_delivery_charge').value = '';
+            });
+        }
+    </script>
+</body>
+</html>

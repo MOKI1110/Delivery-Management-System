@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Deliveries</title>
+<style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: linear-gradient(rgba(50, 42, 0, 0.633), rgba(123, 97, 3, 0.353)), url(keith-misner-h0Vxgz5tyXA-unsplash.jpg);
+            background-position: center;
+            background-size: cover;
+            color: #333;
+            min-height: 100vh; /* Use min-height to allow content to expand */
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 2.8rem;
+            color: #fff; /* Changed for better contrast on background */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.3); /* Slight background for readability */
+            margin-bottom: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            margin-top: 0;
+        }
+
+        nav ul li {
+            margin: 0; /* No margin between nav items, padding handles spacing */
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 25px; /* Increased padding for larger clickable area */
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .container {
+            flex-grow: 1; /* Allows container to take available space */
+            margin: 20px auto; /* Center the container with auto margins */
+            padding: 25px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 95%; /* Adjust max-width as needed */
+            overflow-x: auto; /* Make container horizontally scrollable */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            min-width: 800px; /* Ensure table doesn't shrink too much */
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px; /* Increased padding */
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+
+
+        tbody tr:hover {
+            background-color: #e2f4ff; /* Light blue on hover */
+            cursor: pointer;
+        }
+        
+        /* Basic anchor tag styles */
+        .container a {
+            display: inline-block;
+            font-size: 16px;
+            text-decoration: none;
+            color: #000;
+            background-color: #fff;
+            padding: 10px 20px;
+            margin: 5px 0;
+            border: 1px solid #000;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        /* Hover state for anchor tags */
+        .container a:hover {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+        
+        /* Active state for anchor tags */
+        .container a:active {
+            background-color: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        
+        /* Focus state for accessibility */
+        .container a:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Styles for the status dropdown and button */
+        .status-form {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Increased gap */
+        }
+        .status-form select {
+            padding: 8px; /* Increased padding */
+            border-radius: 4px; /* Slightly more rounded */
+            border: 1px solid #ced4da;
+            font-size: 0.95em;
+            background-color: #fff;
+        }
+        .status-form button {
+            padding: 8px 12px; /* Increased padding */
+            background-color: #28a745; /* Bootstrap-like green */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .status-form button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        /* Status Badges - NEW STYLES */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px; /* Pill shape */
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        /* Specific Status Colors */
+        .status-Ordered { background-color: #6c757d; } /* Gray */
+        .status-Paid { background-color: #007bff; }    /* Blue */
+        .status-In-Transit { background-color: #ffc107; color: #343a40; } /* Yellow, dark text */
+        .status-Shipped { background-color: #17a2b8; } /* Cyan */
+        .status-Out-for-Delivery { background-color: #fd7e14; } /* Orange */
+        .status-Delivered { background-color: #28a745; } /* Green */
+        .status-Cancelled { background-color: #dc3545; } /* Red */
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            nav ul {
+                flex-wrap: wrap;
+            }
+            nav ul li a {
+                padding: 10px 15px;
+            }
+            .container {
+                margin: 10px auto;
+                padding: 15px;
+                max-width: 98%;
+            }
+            table {
+                min-width: 600px; /* Adjust min-width for smaller screens */
+            }
+            th, td {
+                padding: 8px 10px;
+            }
+            .status-form {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners for status updates
+            document.querySelectorAll('.status-form').forEach(form => {
+                form.addEventListener('submit', async (event) => {
+                    event.preventDefault(); // Prevent default form submission
+
+                    const deliveryId = form.dataset.deliveryId;
+                    const newStatus = form.querySelector('select[name="status"]').value;
+
+                    try {
+                        const response = await fetch('/update_delivery_status/', { // Use a dedicated URL for updating status
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCookie('csrftoken') // Get CSRF token for secure POST
+                            },
+                            body: JSON.stringify({
+                                delivery_id: deliveryId,
+                                status: newStatus
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            alert('Status updated successfully!');
+                            // Optionally, update the displayed status directly in the table
+                            // This line ensures the visible status updates without page reload
+                            form.closest('tr').querySelector('.current-status').innerText = newStatus;
+                        } else {
+                            alert('Error updating status: ' + data.error);
+                        }
+                    } catch (error) {
+                        console.error('Fetch error:', error);
+                        alert('An error occurred while trying to update the status.');
+                    }
+                });
+            });
+
+            // Function to get CSRF token (required for POST requests in Django)
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>View Deliveries</h1>
+    <nav>
+        <ul>
+            <li><a href="{% url 'admin_home' %}">Home</a></li>
+            <li><a href="{% url 'add_delivery' %}">Add Delivery</a></li>
+        </ul>
+    </nav>
+    <table id="deliveriesTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Recipient Name</th>
+                <th>Mobile Number</th>
+                <th>Pickup</th>
+                <th>Destination</th>
+                <th>Product Type</th>
+                <th>Distance</th>
+                <th>Weight</th>
+                <th>Delivery Charge</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for delivery in deliveries %}
+                <tr>
+                    <td>{{ delivery.id }}</td>
+                    <td>{{ delivery.recipient_name }}</td>
+                    <td>{{ delivery.recipient_mobile_number }}</td>
+                    <td>{{ delivery.pickup }}</td>
+                    <td>{{ delivery.destination }}</td>
+                    <td>{{ delivery.product_type }}</td>
+                    <td>{{ delivery.distance }} km</td>
+                    <td>{{ delivery.weight }}</td>
+                    <td>₹ {{ delivery.delivery_charge }}</td>
+                    <td>
+                        <span class="current-status">{{ delivery.status }}</span>
+                    </td>
+                    <td>
+                        <form class="status-form" data-delivery-id="{{ delivery.id }}">
+                            <select name="status">
+                                <option value="Ordered" {% if delivery.status == "Ordered" %}selected{% endif %}>Ordered</option>
+                                <option value="Picked" {% if delivery.status == "Picked" %}selected{% endif %}>Picked</option>
+                                <option value="In-Transist" {% if delivery.status == "In-Transist" %}selected{% endif %}>In-Transist</option>
+                                <option value="Out for Delivery" {% if delivery.status == "Out for Delivery" %}selected{% endif %}>Out for Delivery</option>
+                                <option value="Delivered" {% if delivery.status == "Delivered" %}selected{% endif %}>Delivered</option>
+                                <option value="Cancelled" {% if delivery.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                            </select>
+                            <button type="submit">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html> 

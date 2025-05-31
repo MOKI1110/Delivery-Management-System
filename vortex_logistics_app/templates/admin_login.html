@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign In</title>
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif; /* Keep Poppins as per original */
+            box-sizing: border-box;
+        }
+        
+        /* Container for the whole page */
+        .container {
+            width: 100%;
+            height: 100vh;
+            background-image: linear-gradient(rgba(50, 42, 0, 0.633), rgba(123, 97, 3, 0.353)), url(keith-misner-h0Vxgz5tyXA-unsplash.jpg);
+            background-position: center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Center content vertically */
+        }
+        
+        /* Form box styling */
+        .form-box {
+            width: 40%;
+            min-width: 450px; /* Ensure minimum width */
+            position: relative;
+            background: #fff;
+            padding: 50px 60px 70px;
+            text-align: center;
+            border-radius: 8px; /* Slightly more rounded */
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.3); /* Stronger shadow */
+        }
+        
+        /* Form title styling */
+        .form-box h1 {
+            font-size: 30px;
+            margin-bottom: 60px;
+            color: #333;
+            position: relative;
+        }
+        
+        .form-box h1::after {
+            content: '';
+            width: 30px;
+            height: 4px;
+            border-radius: 3px;
+            background: #555;
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translate(-50%);
+        }
+        
+        /* Input field container */
+        .input-field {
+            background: #eaeaea;
+            margin: 15px 0;
+            border-radius: 3px;
+            display: flex;
+            align-items: center; /* Align icon and input vertically */
+            max-height: 65px;
+            transition: max-height 0.5s;
+            overflow: hidden;
+        }
+        
+        /* Input element styling */
+        input {
+            width: 100%;
+            background: transparent;
+            border: 0;
+            outline: 0;
+            padding: 18px 15px;
+        }
+        
+        /* Icon styling within input field */
+        .input-field i {
+            margin-left: 15px;
+            color: #999;
+            font-size: 1.2em; /* Make icons slightly larger */
+        }
+        
+        /* Paragraph styling within form */
+        form p {
+            text-align: left;
+            font-size: 13px;
+            margin-top: 10px; /* Add margin above paragraph */
+        }
+        
+        form p a {
+            text-decoration: none;
+            color: #555;
+        }
+        
+        /* Button field container */
+        .btn-field {
+            width: 100%;
+            display: flex;
+            justify-content: center; /* Center the button */
+            margin-top: 30px; /* Add more space above buttons */
+        }
+        
+        /* Button styling */
+        .btn-field button {
+            background: #333;
+            color: #fff;
+            height: 45px; /* Slightly taller buttons */
+            border-radius: 5px; /* More rounded buttons */
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            transition: background 0.75s ease; /* Smoother transition */
+            width: 180px; /* Wider buttons */
+            margin: 0 10px; /* Add some margin for spacing between buttons if multiple */
+            font-size: 1.1em; /* Slightly larger font */
+        }
+        
+        .btn-field button:hover {
+            background: #555;
+        }
+
+        /* Navigation and Header Styles (from previous contexts, adjusted for consistency) */
+        body {
+            /* These properties are already defined above, but ensuring no conflict */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Consistent font */
+            background-color: #f7f7f7; /* Background color (though image overrides) */
+            color: #333;
+        }
+        
+        .container > h1 { /* Targeting the main page title, not form-box h1 */
+            text-align: center;
+            padding: 20px 0;
+            font-size: 2.8rem; /* Consistent size */
+            color: #fff; /* Consistent color */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.3);
+            margin-bottom: 0;
+            width: 100%; /* Ensure it spans full width */
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            margin-bottom: 20px;
+            width: 100%; /* Ensure it spans full width */
+        }
+        
+        nav ul li {
+            margin: 0; /* Remove horizontal margin for better padding control */
+        }
+        
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 25px; /* Consistent padding */
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        /* Styles for the custom message box (from admin-signin-logic) */
+        .message-box-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .message-box-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .message-box-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .message-box-overlay.show .message-box-content {
+            transform: translateY(0);
+        }
+
+        .message-box-content h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .message-box-content p {
+            margin-bottom: 20px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .message-box-content button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .message-box-content button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Specific styles for success/error messages within the form */
+        .form-message {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            display: none; /* Hidden by default, shown by JS */
+        }
+
+        .form-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block; /* Show on success */
+        }
+
+        .form-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block; /* Show on error */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-box {
+                width: 90%;
+                min-width: unset; /* Remove min-width on small screens */
+                padding: 30px 40px 50px;
+            }
+            .form-box h1 {
+                font-size: 24px;
+                margin-bottom: 40px;
+            }
+            .input-field input {
+                padding: 15px 10px;
+            }
+            .btn-field button {
+                width: 120px;
+                height: 40px;
+                font-size: 1em;
+            }
+            .container > h1 {
+                font-size: 2rem;
+            }
+            nav ul {
+                flex-wrap: wrap;
+            }
+            nav ul li a {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/672e53277c.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="messageBoxOverlay" class="message-box-overlay">
+        <div class="message-box-content">
+            <h3 id="messageBoxTitle"></h3>
+            <p id="messageBoxText"></p>
+            <button id="messageBoxCloseBtn">OK</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Vortex Logistics</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+            </ul>
+        </nav>
+        <div class="form-box">
+            <h1 id="title">Sign In</h1>
+            <form id="signinForm" action="#" onsubmit="event.preventDefault(); validateAndRedirect();">
+                <div class="input-group">
+                    <div id="formMessage" class="form-message"></div>
+
+                    <div class="input-field" id="signInEmailField">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="signInEmail" placeholder="Email" required>
+                    </div>
+                    <div class="input-field" id="signInPasswordField">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="signInPassword" placeholder="Password" required>
+                    </div>
+                    <p>Forgot Password <a href="#">Click Here!</a></p>
+                </div>
+                <div class="btn-field">
+                    <button type="submit">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Function to show custom message box (from admin-signin-logic)
+        function showMessageBox(title, message, type = 'info', callback = null) {
+            const overlay = document.getElementById('messageBoxOverlay');
+            const titleElement = document.getElementById('messageBoxTitle');
+            const textElement = document.getElementById('messageBoxText');
+            const closeBtn = document.getElementById('messageBoxCloseBtn');
+
+            titleElement.innerText = title;
+            textElement.innerText = message;
+
+            overlay.classList.add('show');
+
+            const closeHandler = () => {
+                overlay.classList.remove('show');
+                closeBtn.removeEventListener('click', closeHandler);
+                if (callback) {
+                    callback();
+                }
+            };
+
+            closeBtn.addEventListener('click', closeHandler);
+
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeHandler();
+                }
+            });
+        }
+
+        // Function to handle form submission (from admin-signin-logic)
+        function validateAndRedirect() {
+            var email = document.getElementById('signInEmail').value;
+            var password = document.getElementById('signInPassword').value;
+            var formMessageDiv = document.getElementById('formMessage');
+
+            // Clear previous messages
+            if (formMessageDiv) {
+                formMessageDiv.innerHTML = '';
+                formMessageDiv.className = 'form-message'; // Reset classes
+            }
+
+            // Specific admin credentials check
+            if (email === 'admin@gmail.com' && password === 'admin') {
+                if (formMessageDiv) {
+                    formMessageDiv.classList.add('success');
+                    formMessageDiv.innerText = 'Sign In successful! Redirecting...';
+                } else {
+                    showMessageBox('Success', 'Sign In successful! Redirecting...');
+                }
+
+                // Redirect to the admin home page after a brief delay
+                setTimeout(function() {
+                    window.location.href = "{% url 'admin_home' %}";
+                }, 2000); // 2000 milliseconds = 2 seconds
+            } else {
+                // Show error message for incorrect credentials
+                if (formMessageDiv) {
+                    formMessageDiv.classList.add('error');
+                    formMessageDiv.innerText = 'Invalid email or password. Please try again.';
+                } else {
+                    showMessageBox('Login Failed', 'Invalid email or password. Please try again.', 'error');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

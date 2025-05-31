@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: linear-gradient(rgba(50, 42, 0, 0.633), rgba(123, 97, 3, 0.353)), url(keith-misner-h0Vxgz5tyXA-unsplash.jpg);
+            background-position: center;
+            background-size: cover;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 2.5rem;
+            color: black; /* Text color */
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        nav {
+            position: fixed; /* Fix the navbar at the top */
+            width: 100%; /* Take full width of the viewport */
+            top: 0; /* Stick it to the top */
+            z-index: 1000; /* Ensure it's above other content */
+            background-color: #333;
+            display: flex; /* Use flexbox for alignment */
+            justify-content: space-between; /* Space elements evenly */
+            align-items: center; /* Center items vertically */
+            padding: 0 20px; /* Add padding inside the navbar */
+        }
+
+        nav h1 {
+            margin: 0; /* Remove default margin */
+            color: white; /* Title color */
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin-right: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .content a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .content {
+            text-align: center;
+            padding: 20px;
+            margin-top: 100px; /* Ensure content starts below the fixed navbar */
+        }
+
+        .content button {
+            padding: 12px 24px;
+            margin: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .content button:hover {
+            background-color: #555;
+        }
+
+        .centered-text {
+            text-align: center;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white; /* Beige color */
+            color: black; /* Text color */
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            max-width: 600px;
+        }
+
+        .centered-text h2 {
+            font-size: 2rem;
+            color: black; /* Text color */
+            margin-bottom: 20px;
+        }
+
+        .centered-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .centered-text ul {
+            text-align: left;
+            margin-left: 40px;
+        }
+
+        .centered-text ul li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        /* Section styles */
+        .section {
+            text-align: center;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white; /* Beige color */
+            color: black; /* Text color */
+            border: 1px solid #ddd;
+            border-radius: 2px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            max-width: 600px;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: black; /* Text color */
+            margin-bottom: 20px;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .section ul {
+            text-align: left;
+            margin-left: 40px;
+            padding-left: 0; /* Remove default padding */
+            list-style: none; /* Remove default list styles */
+        }
+        
+
+        .section ul li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        /* Anchor tag styles */
+        .section a {
+            display: inline-block;
+            font-size: 16px;
+            text-decoration: none;
+            color: black; /* Text color */
+            background-color: #fff;
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .section a:hover {
+            background-color: #F2F1EB;
+        }
+
+        /* Button styles */
+        .section button {
+            padding: 12px 24px;
+            margin: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .section button:hover {
+            background-color: #555;
+        }
+
+        .section button.secondary {
+            padding: 12px 24px;
+            margin: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .section button.secondary:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Vortex Logistics</h1>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'user_admin_login' %}">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <p>Welcome to the Delivery Management System. Use the navigation links to manage deliveries.</p>
+        {% comment %} < button><a href="{% url 'add_delivery' %}">Add Delivery</a></button> {% endcomment %}
+        <button><a href="{% url 'user_view_delivery' %}">View Deliveries</a></button>
+    </div>
+    
+    <div class="centered-text">
+        <h2>Your Trusted Delivery Partner</h2>
+        <p>Experience seamless delivery solutions tailored to your needs. Whether it's documents, packages, or special items, we ensure swift and secure delivery across town or beyond.</p>
+        <p>Why choose us?</p>
+        <ul>
+            <li><strong>Reliability:</strong> Count on us for on-time deliveries, every time.</li>
+            <li><strong>Security:</strong> Your packages are safe with our robust tracking and handling procedures.</li>
+            <li><strong>Flexibility:</strong> We offer customized delivery options to suit your schedule and budget.</li>
+            <li><strong>Customer Care:</strong> Our dedicated team provides personalized support from pickup to drop-off.</li>
+        </ul>
+        <p>Join thousands of satisfied customers who trust us for their delivery needs. Let's make delivery hassle-free for you!</p>
+    </div>
+    
+    <div class="section" id="contact-us">
+        <h2>Contact Us</h2>
+        <p>For inquiries or assistance, please contact our customer support:</p>
+        <ul>
+            <li>Email: <a href="mokithpranesh@gmail.com">mokithpranesh@gmail.com</a></li>
+            <li>Phone: <a href="tel:+91 74184 18110">+91 74184 18110</a></li>
+            <li>Address: KCT, Coimbatore</li>
+        </ul>
+        <button class="secondary">Send Message</button>
+    </div>
+    
+    <div class="section" id="about-us">
+        <h2>About Us</h2>
+        <p>We are committed to providing efficient and reliable delivery services tailored to meet your needs. With years of experience in the industry, we ensure secure and timely deliveries,
+ supported by a dedicated team focused on customer satisfaction.</p>
+    </div>
+</body>
+</html>
